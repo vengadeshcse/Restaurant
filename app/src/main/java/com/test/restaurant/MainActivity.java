@@ -2,7 +2,9 @@ package com.test.restaurant;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -47,10 +49,15 @@ public class MainActivity extends AppCompatActivity {
                         foodDetailscard.add(foodDetails1);
                     }
                 }
-                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
-                intent.putExtra("cardview",gson.toJson(foodDetailscard));
-                activityResultLauncher.launch(intent);
+                Log.e("tetst123",""+foodDetailscard.size());
 
+                if (foodDetailscard.size()>=1){
+                    Intent intent = new Intent(MainActivity.this,SecondActivity.class);
+                    intent.putExtra("cardview",gson.toJson(foodDetailscard));
+                    activityResultLauncher.launch(intent);
+                } else {
+                    Toast.makeText(MainActivity.this, "Please Select Food Item", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

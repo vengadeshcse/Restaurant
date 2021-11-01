@@ -2,6 +2,7 @@ package com.test.restaurant;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -51,6 +52,13 @@ public class SecondActivity extends AppCompatActivity {
                 menuAdapter = new MenuAdapter(foodDetails,SecondActivity.this);
                 activitySecondBinding.recyerCard.setAdapter(menuAdapter);
 
+            }
+        });
+
+        activitySecondBinding.btnViewOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(SecondActivity.this, "Order Placed Successfully", Toast.LENGTH_SHORT).show();
             }
         });
 
