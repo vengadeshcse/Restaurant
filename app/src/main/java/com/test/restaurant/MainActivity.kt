@@ -1,12 +1,9 @@
 package com.test.restaurant
 
 import androidx.appcompat.app.AppCompatActivity
-import com.test.restaurant.FoodDetails
 import com.google.gson.Gson
 import android.os.Bundle
 import java.util.ArrayList
-import android.view.View
-import android.util.Log
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
