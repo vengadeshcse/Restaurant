@@ -1,83 +1,67 @@
-package com.test.restaurant;
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.Toast;
+package com.test.restaurant
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity
+import com.google.gson.Gson
+import android.os.Bundle
+import android.view.View
+import android.util.Log
+import android.content.Intent
+import android.widget.Toast
+import android.app.Activity
+import com.google.gson.reflect.TypeToken
+import com.test.restaurant.databinding.ActivitySecondBinding
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.test.restaurant.databinding.ActivitySecondBinding;
+class SecondActivity : AppCompatActivity() {
 
-import java.util.List;
+    var activitySecondBinding: ActivitySecondBinding? = null
+    var foodDetails: List<FoodDetails>? = null
+    var gson = Gson()
+    var menuAdapter: MenuAdapter? = null
 
-public class SecondActivity extends AppCompatActivity {
-
-    ActivitySecondBinding activitySecondBinding;
-    List<FoodDetails> foodDetails;
-    Gson gson = new Gson();
-    MenuAdapter menuAdapter;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        activitySecondBinding = ActivitySecondBinding.inflate(getLayoutInflater());
-        setContentView(activitySecondBinding.getRoot());
-
-        Bundle bundle = getIntent().getExtras();
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activitySecondBinding = ActivitySecondBinding.inflate(layoutInflater)
+        setContentView(activitySecondBinding!!.root)
+        val bundle = intent.extras
         if (bundle != null) {
-            String strfood = bundle.getString("cardview");
-            foodDetails = gson.fromJson(strfood, new TypeToken<List<FoodDetails>>(){}.getType());
-            if(foodDetails.size()>2) {
-                menuAdapter = new MenuAdapter(foodDetails.subList(0, 2), SecondActivity.this);
-            }else{
-                menuAdapter = new MenuAdapter(foodDetails, SecondActivity.this);
-                activitySecondBinding.txtShowmore.setVisibility(View.GONE);
+            val strfood = bundle.getString("cardview")
+            foodDetails = gson.fromJson(strfood, object : TypeToken<List<FoodDetails?>?>() {}.type)
+            if (foodDetails!!.size > 2) {
+                menuAdapter = MenuAdapter(foodDetails?.subList(0, 2), this@SecondActivity)
+            } else {
+                menuAdapter = MenuAdapter(foodDetails, this@SecondActivity)
+                activitySecondBinding!!.txtShowmore.visibility = View.GONE
             }
-            activitySecondBinding.recyerCard.setAdapter(menuAdapter);
-            updateprice();
+            activitySecondBinding!!.recyerCard.adapter = menuAdapter
+            updateprice()
         }
-
-        activitySecondBinding.imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-        activitySecondBinding.txtShowmore.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activitySecondBinding.txtShowmore.setVisibility(View.GONE);
-                menuAdapter = new MenuAdapter(foodDetails,SecondActivity.this);
-                activitySecondBinding.recyerCard.setAdapter(menuAdapter);
-
-            }
-        });
-
-        activitySecondBinding.btnViewOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(SecondActivity.this, "Order Placed Successfully", Toast.LENGTH_SHORT).show();
-            }
-        });
-
+        activitySecondBinding!!.imgBack.setOnClickListener { onBackPressed() }
+        activitySecondBinding!!.txtShowmore.setOnClickListener {
+            activitySecondBinding!!.txtShowmore.visibility = View.GONE
+            menuAdapter = MenuAdapter(foodDetails, this@SecondActivity)
+            activitySecondBinding!!.recyerCard.adapter = menuAdapter
+        }
+        activitySecondBinding!!.btnViewOrder.setOnClickListener {
+            Toast.makeText(
+                this@SecondActivity,
+                "Order Placed Successfully",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
-    public void updateprice(){
-        int price = 0;
-        for (FoodDetails foodDetails : menuAdapter.getFoodDetails()){
-             price += foodDetails.getPrice() * foodDetails.getCount();
+    fun updateprice() {
+        var price = 0
+        for (foodDetails in menuAdapter?.foodDetails!!) {
+            price += foodDetails.price * foodDetails.count
         }
-        activitySecondBinding.txtTotal.setText("€ "+price);
-
+        activitySecondBinding!!.txtTotal.text = "€ $price"
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent();
-        intent.putExtra("cardview", gson.toJson(menuAdapter.getFoodDetails()));
-        setResult(RESULT_OK, intent);
-        finish();
+    override fun onBackPressed() {
+        val intent = Intent()
+        intent.putExtra("cardview", gson.toJson(menuAdapter?.foodDetails))
+        setResult(RESULT_OK, intent)
+        finish()
     }
 }
